@@ -1,0 +1,8 @@
+# Ignorar entorno virtual
+venv
+
+# Ignorar modelos de aprendizaje automático
+models
+
+# Ignorar un modelo específico
+u2net.pth
