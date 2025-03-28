@@ -10,6 +10,7 @@ This repository contains a collection of useful applications:
 2. `remove-bg.py`: A tool to remove backgrounds from images using a deep learning model.
 3. `icons_for_folders.py`: A utility to change folder icons to custom icons on Windows and macOS.
 4. `image-format-converter.py`: A tool to convert images between various image formats.
+5. `LLM_Crawl4AI.ipynb`: A Google Colab notebook for crawling websites based on sitemaps using `crawl4ai`, extracting content, and saving it as Markdown.
 
 ## Setup
 
@@ -109,10 +110,26 @@ This repository contains a collection of useful applications:
 4. Click "Convert" to start the conversion.
 5. Choose the save location and filename for the converted image.
 
+### Web Crawler (Google Colab Notebook)
+
+1. Open `LLM_Crawl4AI.ipynb` in Google Colaboratory.
+2. Run the first cell (`#@title Run this cell`) to install dependencies and import necessary libraries. This might take a moment.
+3. Run the second cell (`#@title Configuration and functions`) to define the crawler class and helper functions.
+4. Run the third cell (`#@title RUN`) to display the configuration UI.
+5. Configure the crawler using the UI widgets:
+    * Set the `Sitemap URL`.
+    * Specify the `Output File` path (within the Colab environment, e.g., `/content/output.md`).
+    * Adjust `Concurrency`, `Timeout`, `Min Words`, and `Pruning` density as needed.
+    * Optionally change the `Log File` path.
+6. Click the "Start Crawling" button.
+7. Monitor the progress bar and status messages.
+8. Once completed, the output Markdown file will be automatically downloaded by your browser (if successful and the file is not empty). The log file path will also be displayed.
+
 ## Project Structure
 
 * `README.md`: This file.
-* `requirements.txt`: Lists project dependencies.
+* `requirements.txt`: Lists project dependencies for the Python scripts.
+* `LLM_Crawl4AI.ipynb`: Google Colab notebook for web crawling.
 * `image-to-svg.py`: Source code for the Image to SVG converter application.
 * `remove-bg.py`: Source code for the Background Remover application.
 * `icons_for_folders.py`: Source code for the Folder Icon Changer utility.
@@ -161,17 +178,32 @@ This script provides a GUI application for converting images between different f
 * Supports common image formats such as PNG, JPG, BMP, GIF, and TIFF, among others supported by Pillow.
 * Provides a user-friendly interface for simple image format conversions.
 
+### `LLM_Crawl4AI.ipynb`
+
+This Jupyter Notebook is designed to run in Google Colaboratory and provides a web crawling utility.
+
+* It utilizes the `crawl4ai` library to asynchronously crawl URLs found in a specified sitemap XML file.
+* Uses `httpx` for asynchronous HTTP requests to fetch the sitemap and web pages.
+* Employs `ipywidgets` to create an interactive UI within the Colab environment for configuring crawl parameters (sitemap URL, output file, concurrency, timeouts, content pruning settings).
+* Leverages `playwright` (installed within Colab) for browser automation if needed by `crawl4ai` for JavaScript rendering.
+* Processes the scraped HTML content, filters it based on word count and pruning density, and converts the relevant parts to Markdown format using `crawl4ai`'s built-in features.
+* Includes detailed logging to a file within the Colab environment for debugging purposes.
+* Manages the crawling process in a separate thread to keep the UI responsive.
+* Provides real-time progress updates and status messages via the UI.
+* Automatically triggers a file download in the browser upon successful completion.
+
 ### `requirements.txt`
 
-This file lists all the Python dependencies required for running the applications in this repository. It includes libraries for:
+This file lists all the Python dependencies required for running the Python script applications (`.py` files) in this repository. It includes libraries primarily for:
 
 * Image processing: `Pillow`, `opencv-python`, `scikit-image`, `imageio`
 * SVG manipulation: `svgwrite`, `svglib`
 * Numerical computation: `numpy`, `scipy`
 * Machine learning (for background removal): `torch`, `torchvision`, `torchaudio`
-* User interface: `tkinter`, `ttkthemes` (if used, though not explicitly listed in your provided `requirements.txt`)
-* General utilities: `os`, `platform`, `logging`, etc.
-* Other dependencies as needed by the libraries above.
+* User interface: `tkinter` (Note: `ttkthemes` might be used but isn't explicitly listed in the base `requirements.txt`)
+* General utilities: `os`, `platform`, `logging`, etc. (implicitly used)
+
+**Note:** The `LLM_Crawl4AI.ipynb` notebook has its own dependencies (`crawl4ai`, `httpx`, `ipywidgets`, `playwright`, etc.) which are installed directly within the Google Colab environment when running the notebook's setup cell. They are not listed in this `requirements.txt` file.
 
 ## Contributing
 
