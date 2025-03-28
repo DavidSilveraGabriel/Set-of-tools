@@ -6,3 +6,10 @@ models
 
 # Ignorar un modelo específico
 u2net.pth
+
+#icon ignore
+icon_convertido.ico
+
+icono_carpeta.log
+
+desktop.ini
