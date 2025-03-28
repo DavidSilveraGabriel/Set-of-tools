@@ -1,13 +1,12 @@
-2025-03-23 16:22:36,595 - DEBUG - Archivo de icono seleccionado: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY/icon.ico'
-2025-03-23 16:22:42,048 - DEBUG - Carpeta seleccionada: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY'
-2025-03-23 16:22:42,738 - INFO - Intentando aplicar icono: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY/icon.ico', a carpeta: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY'
-2025-03-23 16:22:42,738 - INFO - Iniciando cambiar_icono_carpeta con icono_path: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY/icon.ico', carpeta_path: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY'
-2025-03-23 16:22:42,738 - DEBUG - Sistema operativo detectado: Windows
-2025-03-23 16:22:42,739 - DEBUG - Procesando en Windows
-2025-03-23 16:22:42,739 - DEBUG - Ruta de desktop.ini: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY\desktop.ini'
-2025-03-23 16:22:42,759 - DEBUG - Atributos -s -h quitados de desktop.ini existente
-2025-03-23 16:22:42,759 - DEBUG - Archivo desktop.ini escrito correctamente
-2025-03-23 16:22:42,776 - DEBUG - Atributos +s +h aplicados a desktop.ini
-2025-03-23 16:22:42,793 - DEBUG - Atributo +s aplicado a la carpeta
-2025-03-23 16:22:43,707 - INFO - Icono establecido con éxito en Windows para carpeta: 'C:/Users/ingen/Desktop/CURSO COMPLETO DE PYTHON UDEMY'
-2025-03-23 16:22:43,708 - INFO - Icono aplicado exitosamente.
+2025-03-27 23:53:23,582 - DEBUG - Archivo de icono seleccionado: 'C:/Users/ingen/Desktop/FOLDERS/icon_convertido.ico'
+2025-03-27 23:53:28,925 - DEBUG - Carpeta seleccionada: 'C:/Users/ingen/Desktop/FOLDERS'
+2025-03-27 23:53:29,724 - INFO - Intentando aplicar icono: 'C:/Users/ingen/Desktop/FOLDERS/icon_convertido.ico', a carpeta: 'C:/Users/ingen/Desktop/FOLDERS'
+2025-03-27 23:53:29,724 - INFO - Iniciando cambiar_icono_carpeta con icono_path: 'C:/Users/ingen/Desktop/FOLDERS/icon_convertido.ico', carpeta_path: 'C:/Users/ingen/Desktop/FOLDERS'
+2025-03-27 23:53:29,724 - DEBUG - Sistema operativo detectado: Windows
+2025-03-27 23:53:29,724 - DEBUG - Procesando en Windows
+2025-03-27 23:53:29,725 - DEBUG - Ruta de desktop.ini: 'C:/Users/ingen/Desktop/FOLDERS\desktop.ini'
+2025-03-27 23:53:29,725 - DEBUG - Archivo desktop.ini escrito correctamente
+2025-03-27 23:53:29,746 - DEBUG - Atributos +s +h aplicados a desktop.ini
+2025-03-27 23:53:29,763 - DEBUG - Atributo +s aplicado a la carpeta
+2025-03-27 23:53:30,694 - INFO - Icono establecido con éxito en Windows para carpeta: 'C:/Users/ingen/Desktop/FOLDERS'
+2025-03-27 23:53:30,694 - INFO - Icono aplicado exitosamente.
