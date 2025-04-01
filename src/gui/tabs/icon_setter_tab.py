@@ -3,8 +3,8 @@ from tkinter import ttk, messagebox
 import os
 import platform
 import logging
-from ..utils import file_helpers
-from ..core import folder_icon_setter
+from utils import file_helpers
+from core import folder_icon_setter
 
 class IconSetterTab:
     def __init__(self, master_frame):

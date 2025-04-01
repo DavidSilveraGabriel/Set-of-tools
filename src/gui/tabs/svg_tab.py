@@ -5,8 +5,8 @@ import logging
 from PIL import Image, ImageTk
 import threading # To run conversion in background
 
-from ..utils import file_helpers
-from ..core import svg_converter
+from utils import file_helpers
+from core import svg_converter
 
 class SvgTab:
     def __init__(self, master_frame):

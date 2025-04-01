@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import os
 import logging
-from ..utils import file_helpers
-from ..core import image_converter
+from utils import file_helpers
+from core import image_converter
 
 class ConverterTab:
     def __init__(self, master_frame):
