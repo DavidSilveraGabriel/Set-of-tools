@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-# Import tab modules later when they are created
-# from .tabs.converter_tab import ConverterTab
-# from .tabs.icon_setter_tab import IconSetterTab
-# from .tabs.svg_tab import SvgTab
+# Import tab modules
+from .tabs.converter_tab import ConverterTab
+from .tabs.icon_setter_tab import IconSetterTab
+from .tabs.svg_tab import SvgTab
 
 class MainWindow:
     def __init__(self, master):
@@ -32,12 +32,12 @@ class MainWindow:
         self.notebook.add(self.svg_frame, text='Image to SVG')
 
         # --- Populate Tabs ---
-        # This will be done by instantiating the tab classes later
-        # ConverterTab(self.converter_frame)
-        # IconSetterTab(self.icon_setter_frame)
-        # SvgTab(self.svg_frame)
+        # Instantiate each tab class within its frame
+        ConverterTab(self.converter_frame)
+        IconSetterTab(self.icon_setter_frame)
+        SvgTab(self.svg_frame)
 
-        print("Main window initialized.") # Placeholder
+        # print("Main window initialized.") # Placeholder removed
 
 if __name__ == '__main__':
     # This allows testing the main window structure independently
