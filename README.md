@@ -1,209 +1,130 @@
 # Set-of-Tools
 
-A personal repository for storing a set of practical tools, primarily focused on image processing and manipulation, and system utilities.
+A personal repository for storing a set of practical tools, primarily focused on image processing and manipulation, and system utilities, now refactored into a unified GUI application.
 
 ## Overview
 
-This repository contains a collection of useful applications:
+This repository contains a collection of useful applications integrated into a single interface:
 
-1. `image-to-svg.py`: A tool to convert raster images (PNG, JPG, etc.) to vector SVG format.
-2. `remove-bg.py`: A tool to remove backgrounds from images using a deep learning model.
-3. `icons_for_folders.py`: A utility to change folder icons to custom icons on Windows and macOS.
-4. `image-format-converter.py`: A tool to convert images between various image formats.
-5. `LLM_Crawl4AI.ipynb`: A Google Colab notebook for crawling websites based on sitemaps using `crawl4ai`, extracting content, and saving it as Markdown.
+1.  **Image Format Converter:** Converts images between various formats (PNG, JPEG, WEBP, etc.) and allows resizing.
+2.  **Folder Icon Setter:** Changes folder icons to custom icons on Windows (.ico) and macOS (.icns).
+3.  **Image to SVG Converter:** Converts raster images (PNG, JPG, etc.) to vector SVG format using color quantization and contour tracing.
+
+Additionally, it includes:
+
+4.  `notebooks/LLM_Crawl4AI.ipynb`: A Google Colab notebook for crawling websites based on sitemaps using `crawl4ai`, extracting content, and saving it as Markdown.
+
+*(Note: The previous background removal tool has been removed).*
 
 ## Setup
 
 ### Prerequisites
 
-* Python 3.7+
-* pip (Python package installer)
+*   Python 3.7+ (Tested with Python 3.x)
+*   pip (Python package installer)
 
 ### Installation
 
-1. **Clone the repository:**
-
+1.  **Clone the repository:**
     ```bash
     git clone [repository_url]
     cd set-of-tools
     ```
 
-2. **Create and activate a virtual environment:**
-
+2.  **Create and activate a virtual environment (Recommended):**
     ```bash
-    py -m venv venv   # On Windows
-    # python3 -m venv venv # On Linux or Mac
+    # Windows
+    python -m venv .venv
+    .venv\Scripts\activate
+
+    # macOS/Linux
+    python3 -m venv .venv
+    source .venv/bin/activate
     ```
 
-    **On Windows:**
-
-    ```bash
-    venv\Scripts\activate
-    ```
-
-    **On Linux/Mac:**
-
-    ```bash
-    source venv/bin/activate
-    ```
-
-3. **Install dependencies:**
-
+3.  **Install dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
-
-4. **Install PyTorch (for background remover):**
-
-    ```bash
-    pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
-    ```
+    *(Note: The PyTorch installation step is no longer required).*
 
 ## Usage
 
-### Image to SVG Converter
+### Main Application (Image Tools)
 
-1. Run `image-to-svg.py`:
-
+1.  Ensure your virtual environment is activated and dependencies are installed.
+2.  Run the main application from the project root directory:
     ```bash
-    python image-to-svg.py
+    python src/main.py
     ```
-
-2. Use the GUI to load an image and adjust conversion parameters (number of colors, tolerance, etc.).
-3. Click "Convert" to start the conversion.
-
-### Background Remover
-
-1. Run `remove-bg.py`:
-
-    ```bash
-    python remove-bg.py
-    ```
-
-2. Use the GUI to load an image.
-3. Adjust parameters if needed, and then click "Process" to remove the background.
-4. Save the modified image, if needed.
-
-### Folder Icon Changer
-
-1. Run `icons_for_folders.py`:
-
-    ```bash
-    python icons_for_folders.py
-    ```
-
-2. Use the GUI to select an icon file (.ico for Windows, .icns for macOS).
-3. Select the target folder to apply the custom icon.
-4. Click "Apply Icon to Folder".
-   *Note: Folder icon customization on Linux is not persistently supported by this script.*
-
-### Image Format Converter
-
-1. Run `image-format-converter.py`:
-
-    ```bash
-    python image-format-converter.py
-    ```
-
-2. Use the GUI to load an image.
-3. Select the desired output format from the dropdown menu.
-4. Click "Convert" to start the conversion.
-5. Choose the save location and filename for the converted image.
+3.  The application window will open with tabs for each tool:
+    *   **Format Converter:** Select an input image, choose the desired output format and resizing options, then click "Convert Image".
+    *   **Folder Icon Setter:** Select an icon file (.ico/.icns) and a target folder, then click "Apply Icon to Folder". Note OS-specific requirements and potential need for admin rights on Windows.
+    *   **Image to SVG:** Select an input image, adjust conversion parameters (colors, tolerance, opacity, simplification) as needed, then click "Convert to SVG".
 
 ### Web Crawler (Google Colab Notebook)
 
-1. Open `LLM_Crawl4AI.ipynb` in Google Colaboratory.
-2. Run the first cell (`#@title Run this cell`) to install dependencies and import necessary libraries. This might take a moment.
-3. Run the second cell (`#@title Configuration and functions`) to define the crawler class and helper functions.
-4. Run the third cell (`#@title RUN`) to display the configuration UI.
-5. Configure the crawler using the UI widgets:
-    * Set the `Sitemap URL`.
-    * Specify the `Output File` path (within the Colab environment, e.g., `/content/output.md`).
-    * Adjust `Concurrency`, `Timeout`, `Min Words`, and `Pruning` density as needed.
-    * Optionally change the `Log File` path.
-6. Click the "Start Crawling" button.
-7. Monitor the progress bar and status messages.
-8. Once completed, the output Markdown file will be automatically downloaded by your browser (if successful and the file is not empty). The log file path will also be displayed.
+1.  Open `notebooks/LLM_Crawl4AI.ipynb` in Google Colaboratory.
+2.  Follow the instructions within the notebook cells to install dependencies, configure, and run the crawler.
 
 ## Project Structure
 
-* `README.md`: This file.
-* `requirements.txt`: Lists project dependencies for the Python scripts.
-* `LLM_Crawl4AI.ipynb`: Google Colab notebook for web crawling.
-* `image-to-svg.py`: Source code for the Image to SVG converter application.
-* `remove-bg.py`: Source code for the Background Remover application.
-* `icons_for_folders.py`: Source code for the Folder Icon Changer utility.
-* `image-format-converter.py`: Source code for the Image Format Converter tool.
-* `.gitignore`: Specifies intentionally untracked files that Git should ignore.
-* `LICENSE`: Contains the license information for the project (Apache License 2.0).
+```
+set-of-tools/
+├── src/                     # Source code for the GUI application
+│   ├── core/                # Core processing logic (no GUI elements)
+│   │   ├── __init__.py
+│   │   ├── image_converter.py
+│   │   ├── folder_icon_setter.py
+│   │   └── svg_converter.py
+│   ├── gui/                 # GUI components (Tkinter)
+│   │   ├── __init__.py
+│   │   ├── main_window.py     # Main application window (Notebook layout)
+│   │   └── tabs/              # Modules for each tool's GUI tab
+│   │       ├── __init__.py
+│   │       ├── converter_tab.py
+│   │       ├── icon_setter_tab.py
+│   │       └── svg_tab.py
+│   ├── utils/               # Utility functions
+│   │   ├── __init__.py
+│   │   └── file_helpers.py    # File/folder dialog helpers
+│   └── main.py              # Main application entry point
+├── notebooks/               # Jupyter/Colab notebooks
+│   └── LLM_Crawl4AI.ipynb
+├── .gitignore
+├── LICENSE
+├── README.md                # This file
+└── requirements.txt         # Python dependencies for the src application
+```
 
+## Detailed Description of Components
 
-## Detailed Description of Files
+### `src/` Directory
 
-### `image-to-svg.py`
+This directory contains the source code for the unified GUI application.
 
-This file contains the source code for the image-to-SVG converter application. It leverages the tkinter library for the GUI.
+*   **`main.py`**: The entry point to launch the application. It initializes the Tkinter root window and the `MainWindow`.
+*   **`core/`**: Contains modules with the core backend logic for each tool, separated from the UI. These modules handle the actual processing (image conversion, icon setting, SVG generation).
+*   **`gui/`**: Contains the user interface code built with Tkinter and ttk.
+    *   `main_window.py`: Defines the main application window structure, primarily the `ttk.Notebook` that holds the different tool tabs.
+    *   `tabs/`: Each file in this subdirectory defines the layout and widgets for a specific tab in the main window, connecting UI elements to the functions in the `core/` modules.
+*   **`utils/`**: Contains shared utility functions used across the application, such as standardized file/folder selection dialogs (`file_helpers.py`).
 
-* It has a class `ModernImageToSvgConverter` that handles most of the functionalities.
-* It allows the user to select images with a GUI file browser, display the selected image on a canvas and has controls to configure parameters like `n_colors`, `tolerance`, `opacity`, and `simplify_tolerance`.
-* It includes buttons to trigger different functions such as image selection and conversion, that can also be styled with a custom style.
+### `notebooks/` Directory
 
-### `remove-bg.py`
-
-This file provides the source code for a background removal tool that uses a pre-trained deep-learning model.
-
-* This file has the `ModernBackgroundRemover` class, that handles most of the app's logic
-* The main purpose of this application is to remove the background of a given image using a pre-trained deep learning model based on the U-Net architecture.
-* It uses PyTorch for the deep learning model and has functions to handle the pre-processing and post-processing of the image.
-* It implements a basic GUI using tkinter, where users can load an image, process it to remove the background, crop it and save it.
-* The deep learning model is composed of classes such as `REBNCONV`, `RSU7`, `RSU6`, `RSU5`, `RSU4`, and `U2NET` (defined in separate modules if modularized).
-
-### `icons_for_folders.py`
-
-This file implements a GUI application to change the icons of folders.
-
-* It uses `tkinter` for the graphical interface, allowing users to select both an icon file and a target folder.
-* Supports different icon formats based on the operating system: `.ico` for Windows and `.icns` for macOS.
-* On Windows, it modifies the `desktop.ini` file within the target folder and uses `attrib` commands to set system and hidden attributes.
-* On macOS, it utilizes AppleScript via `subprocess` to interact with Finder and set the folder icon.
-* Provides error handling and user feedback through message boxes.
-
-### `image-format-converter.py`
-
-This script provides a GUI application for converting images between different formats.
-
-* Built with `tkinter` for the user interface.
-* Allows users to select an input image file and choose an output format from a dropdown list.
-* Uses the Pillow (PIL) library to handle image loading and saving in various formats.
-* Supports common image formats such as PNG, JPG, BMP, GIF, and TIFF, among others supported by Pillow.
-* Provides a user-friendly interface for simple image format conversions.
-
-### `LLM_Crawl4AI.ipynb`
-
-This Jupyter Notebook is designed to run in Google Colaboratory and provides a web crawling utility.
-
-* It utilizes the `crawl4ai` library to asynchronously crawl URLs found in a specified sitemap XML file.
-* Uses `httpx` for asynchronous HTTP requests to fetch the sitemap and web pages.
-* Employs `ipywidgets` to create an interactive UI within the Colab environment for configuring crawl parameters (sitemap URL, output file, concurrency, timeouts, content pruning settings).
-* Leverages `playwright` (installed within Colab) for browser automation if needed by `crawl4ai` for JavaScript rendering.
-* Processes the scraped HTML content, filters it based on word count and pruning density, and converts the relevant parts to Markdown format using `crawl4ai`'s built-in features.
-* Includes detailed logging to a file within the Colab environment for debugging purposes.
-* Manages the crawling process in a separate thread to keep the UI responsive.
-* Provides real-time progress updates and status messages via the UI.
-* Automatically triggers a file download in the browser upon successful completion.
+*   **`LLM_Crawl4AI.ipynb`**: A Jupyter Notebook designed for Google Colab to crawl websites using `crawl4ai`. See the "Usage" section and comments within the notebook for details.
 
 ### `requirements.txt`
 
-This file lists all the Python dependencies required for running the Python script applications (`.py` files) in this repository. It includes libraries primarily for:
+This file lists the Python dependencies required specifically for running the GUI application (`src/main.py`). Key dependencies include:
 
-* Image processing: `Pillow`, `opencv-python`, `scikit-image`, `imageio`
-* SVG manipulation: `svgwrite`, `svglib`
-* Numerical computation: `numpy`, `scipy`
-* Machine learning (for background removal): `torch`, `torchvision`, `torchaudio`
-* User interface: `tkinter` (Note: `ttkthemes` might be used but isn't explicitly listed in the base `requirements.txt`)
-* General utilities: `os`, `platform`, `logging`, etc. (implicitly used)
+*   `Pillow`: For image loading, manipulation, and saving.
+*   `numpy`: For numerical operations, especially in image processing.
+*   `scikit-image`: Used for image processing tasks like contour finding in the SVG converter.
+*   `scikit-learn`: Used for KMeans color clustering in the SVG converter.
+*   `svgwrite`: For generating SVG files.
 
-**Note:** The `LLM_Crawl4AI.ipynb` notebook has its own dependencies (`crawl4ai`, `httpx`, `ipywidgets`, `playwright`, etc.) which are installed directly within the Google Colab environment when running the notebook's setup cell. They are not listed in this `requirements.txt` file.
+**Note:** The `LLM_Crawl4AI.ipynb` notebook has its own dependencies (`crawl4ai`, `httpx`, `ipywidgets`, etc.) which are installed directly within the Google Colab environment when running the notebook's setup cell. They are not listed in this `requirements.txt` file.
 
 ## Contributing
 
