@@ -78,7 +78,7 @@ class SvgTab:
             lbl.pack(side=tk.LEFT)
             val_lbl = ttk.Label(f, textvariable=variable, width=4) # Show current value
             val_lbl.pack(side=tk.RIGHT, padx=(5,0))
-            scale = ttk.Scale(f, from_=min_val, to=max_val, variable=variable, orient=tk.HORIZONTAL, resolution=resolution)
+            scale = ttk.Scale(f, from_=min_val, to=max_val, variable=variable, orient=tk.HORIZONTAL) # Removed resolution
             scale.pack(fill=tk.X, expand=True, side=tk.RIGHT)
 
         create_option_control("Num Colors", self.n_colors, 2, 16, 1)
