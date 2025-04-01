@@ -11,10 +11,7 @@ class MainWindow:
         master.title("Multi-Tool Suite")
         master.geometry("800x600") # Adjust size as needed
 
-        # Configure style (optional, can be refined later)
-        style = ttk.Style()
-        # Example theme, can be changed
-        style.theme_use('clam') 
+        # Style is now handled by ThemedTk in main.py
 
         # Create the Notebook (tabbed interface)
         self.notebook = ttk.Notebook(master)

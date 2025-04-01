@@ -12,6 +12,9 @@ scikit-image==0.25.0
 scikit-learn==1.6.0 # For KMeans clustering
 svgwrite==1.4.3
 
+# GUI Theming
+ttkthemes==3.2.2
+
 # Common transitive dependencies (often required by scikit-learn/image)
 joblib==1.4.2
 threadpoolctl==3.5.0
