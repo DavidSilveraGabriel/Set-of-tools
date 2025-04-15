@@ -4,6 +4,7 @@ from tkinter import ttk
 from .tabs.converter_tab import ConverterTab
 from .tabs.icon_setter_tab import IconSetterTab
 from .tabs.svg_tab import SvgTab
+from .tabs.modifier_tab import ModifierTab # Import the new tab
 
 class MainWindow:
     def __init__(self, master):
@@ -22,15 +23,18 @@ class MainWindow:
         self.converter_frame = ttk.Frame(self.notebook, padding="10")
         self.icon_setter_frame = ttk.Frame(self.notebook, padding="10")
         self.svg_frame = ttk.Frame(self.notebook, padding="10")
+        self.modifier_frame = ttk.Frame(self.notebook, padding="10") # Create frame for the new tab
 
         # --- Add Tabs to Notebook ---
         self.notebook.add(self.converter_frame, text='Format Converter')
+        self.notebook.add(self.modifier_frame, text='Image Modifier') # Add the new tab
         self.notebook.add(self.icon_setter_frame, text='Folder Icon Setter')
         self.notebook.add(self.svg_frame, text='Image to SVG')
 
         # --- Populate Tabs ---
         # Instantiate each tab class within its frame
         ConverterTab(self.converter_frame)
+        ModifierTab(self.modifier_frame) # Instantiate the new tab class
         IconSetterTab(self.icon_setter_frame)
         SvgTab(self.svg_frame)
 

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import os
 import logging
+from PIL import Image, ImageTk  # Import PIL modules
 from utils import file_helpers
 from core import image_converter
 
@@ -16,6 +17,7 @@ class ConverterTab:
         self.resize_scale = tk.StringVar()
         self.jpeg_quality = tk.IntVar(value=95)
         self.status_var = tk.StringVar(value="Ready")
+        self.preview_image_tk = None # To hold the PhotoImage reference
 
         # --- UI Elements ---
         # Input File Selection
@@ -27,7 +29,21 @@ class ConverterTab:
         input_button = ttk.Button(input_frame, text="Browse...", command=self.select_input_file)
         input_button.pack(side=tk.LEFT)
 
-        # Output Format Selection
+        # --- Image Preview Area ---
+        preview_frame = ttk.LabelFrame(self.frame, text="Preview", padding="10")
+        preview_frame.pack(pady=5, fill=tk.BOTH, expand=True) # Allow expansion
+
+        # Set a fixed size for the preview label initially, can adjust layout later
+        self.preview_label = ttk.Label(preview_frame, text="Select an image to preview", anchor=tk.CENTER)
+        # Pack the label to fill the frame and center the content
+        self.preview_label.pack(fill=tk.BOTH, expand=True)
+        # Store the frame's initial size request to help with resizing logic if needed
+        preview_frame.update_idletasks() # Ensure dimensions are calculated
+        self._preview_max_width = preview_frame.winfo_width() if preview_frame.winfo_width() > 1 else 200 # Fallback size
+        self._preview_max_height = preview_frame.winfo_height() if preview_frame.winfo_height() > 1 else 200 # Fallback size
+
+
+        # --- Output Format Selection ---
         format_frame = ttk.LabelFrame(self.frame, text="Output Format", padding="10")
         format_frame.pack(fill=tk.X, pady=5)
 
@@ -102,6 +118,37 @@ class ConverterTab:
         if path:
             self.input_path.set(path)
             self.status_var.set(f"Selected: {os.path.basename(path)}")
+            self.load_and_display_preview(path) # Load preview
+
+    def load_and_display_preview(self, image_path):
+        """Loads an image, resizes it for preview, and displays it."""
+        try:
+            # Define max preview dimensions (adjust as needed)
+            max_width = self._preview_max_width
+            max_height = self._preview_max_height
+
+            img = Image.open(image_path)
+            img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+
+            self.preview_image_tk = ImageTk.PhotoImage(img) # Keep reference
+
+            self.preview_label.config(image=self.preview_image_tk, text="") # Display image, clear text
+            self.preview_label.image = self.preview_image_tk # Keep reference for label too
+
+        except FileNotFoundError:
+            self.status_var.set("Error: Preview file not found.")
+            self.clear_preview()
+        except Exception as e:
+            self.status_var.set(f"Error loading preview: {e}")
+            logging.warning(f"Could not load preview for {image_path}: {e}", exc_info=True)
+            self.clear_preview()
+
+    def clear_preview(self):
+        """Clears the preview area."""
+        self.preview_label.config(image='', text="Select an image to preview")
+        self.preview_label.image = None
+        self.preview_image_tk = None
+
 
     def update_resize_fields(self):
         """Enable/disable resize parameter fields based on selected option."""

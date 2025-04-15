@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 import os
 import platform
 import logging
+from PIL import Image, ImageTk # Import PIL modules
 from utils import file_helpers
 from core import folder_icon_setter
 
@@ -13,6 +14,7 @@ class IconSetterTab:
         self.folder_path = tk.StringVar()
         self.status_var = tk.StringVar(value="Ready")
         self.admin_warning_var = tk.StringVar(value="") # For Windows admin warning
+        self.preview_image_tk = None # To hold the PhotoImage reference
 
         # --- UI Elements ---
         # OS Info
@@ -38,7 +40,19 @@ class IconSetterTab:
         icon_button = ttk.Button(icon_frame, text="Browse...", command=self.select_icon)
         icon_button.pack(side=tk.LEFT)
 
-        # Folder Selection
+        # --- Icon Preview Area ---
+        preview_frame = ttk.LabelFrame(self.frame, text="Icon Preview", padding="10")
+        # Place it below icon selection, before folder selection
+        preview_frame.pack(pady=5, fill=tk.BOTH, expand=True)
+
+        self.preview_label = ttk.Label(preview_frame, text="Select an icon to preview", anchor=tk.CENTER)
+        self.preview_label.pack(fill=tk.BOTH, expand=True)
+        preview_frame.update_idletasks()
+        self._preview_max_width = preview_frame.winfo_width() if preview_frame.winfo_width() > 1 else 100 # Smaller default for icons
+        self._preview_max_height = preview_frame.winfo_height() if preview_frame.winfo_height() > 1 else 100
+
+
+        # --- Folder Selection ---
         folder_frame = ttk.LabelFrame(self.frame, text="Target Folder", padding="10")
         folder_frame.pack(fill=tk.X, pady=5)
 
@@ -68,6 +82,39 @@ class IconSetterTab:
         if path:
             self.icon_path.set(path)
             self.status_var.set(f"Selected Icon: {os.path.basename(path)}")
+            self.load_and_display_preview(path) # Load preview
+
+    def load_and_display_preview(self, image_path):
+        """Loads an icon/image, resizes it for preview, and displays it."""
+        try:
+            max_width = self._preview_max_width
+            max_height = self._preview_max_height
+
+            # Use PIL to open. ICO should work, ICNS might be problematic.
+            img = Image.open(image_path)
+            # Icons might have multiple sizes, try to get a reasonable one if possible
+            # For simplicity, just thumbnail the default loaded size
+            img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+
+            self.preview_image_tk = ImageTk.PhotoImage(img) # Keep reference
+
+            self.preview_label.config(image=self.preview_image_tk, text="") # Display image
+            self.preview_label.image = self.preview_image_tk # Keep reference for label
+
+        except FileNotFoundError:
+            self.status_var.set("Error: Preview file not found.")
+            self.clear_preview()
+        except Exception as e:
+            # PIL might fail on some icon formats (.icns especially)
+            self.status_var.set(f"Error loading preview: {e}")
+            logging.warning(f"Could not load preview for {image_path}: {e}", exc_info=True)
+            self.clear_preview("Preview unavailable") # Indicate failure
+
+    def clear_preview(self, message="Select an icon to preview"):
+        """Clears the preview area."""
+        self.preview_label.config(image='', text=message)
+        self.preview_label.image = None
+        self.preview_image_tk = None
 
     def select_folder(self):
         path = file_helpers.select_folder()
