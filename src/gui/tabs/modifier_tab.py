@@ -12,6 +12,14 @@ class ModifierTab:
         self.input_path = tk.StringVar()
         self.status_var = tk.StringVar(value="Ready")
         self.preview_image_tk = None
+        self.original_image_size = None # Store original (width, height)
+        self.preview_scale_factor = 1.0
+        self.preview_offset_x = 0
+        self.preview_offset_y = 0
+        self.image_on_canvas_id = None
+        self.crop_rect_id = None
+        self.start_x = None
+        self.start_y = None
 
         # Resize parameters
         self.resize_width = tk.StringVar()
@@ -38,15 +46,27 @@ class ModifierTab:
         main_area = ttk.Frame(self.frame)
         main_area.pack(fill=tk.BOTH, expand=True, pady=5)
 
-        # Preview Area (Left)
-        preview_frame = ttk.LabelFrame(main_area, text="Preview", padding="10")
+        # Preview Area (Left) - Now using Canvas
+        preview_frame = ttk.LabelFrame(main_area, text="Preview (Click and drag to select crop area)", padding="10")
         preview_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
 
-        self.preview_label = ttk.Label(preview_frame, text="Select an image to preview", anchor=tk.CENTER)
-        self.preview_label.pack(fill=tk.BOTH, expand=True)
-        preview_frame.update_idletasks()
-        self._preview_max_width = preview_frame.winfo_width() if preview_frame.winfo_width() > 1 else 300
-        self._preview_max_height = preview_frame.winfo_height() if preview_frame.winfo_height() > 1 else 300
+        # Use a standard tk.Canvas for drawing
+        self.preview_canvas = tk.Canvas(preview_frame, bg='gray80', relief=tk.SUNKEN, borderwidth=1)
+        self.preview_canvas.pack(fill=tk.BOTH, expand=True)
+        self.preview_canvas.update_idletasks() # Ensure dimensions are calculated before getting size
+        self._preview_max_width = self.preview_canvas.winfo_width() if self.preview_canvas.winfo_width() > 1 else 300
+        self._preview_max_height = self.preview_canvas.winfo_height() if self.preview_canvas.winfo_height() > 1 else 300
+
+        # Bind mouse events for cropping selection
+        self.preview_canvas.bind("<ButtonPress-1>", self.on_canvas_press)
+        self.preview_canvas.bind("<B1-Motion>", self.on_canvas_drag)
+        self.preview_canvas.bind("<ButtonRelease-1>", self.on_canvas_release)
+
+        # Placeholder text
+        self._placeholder_text_id = self.preview_canvas.create_text(
+            self._preview_max_width / 2, self._preview_max_height / 2,
+            text="Select an image to preview", fill="gray50", anchor=tk.CENTER
+        )
 
         # Controls Area (Right)
         controls_frame = ttk.Frame(main_area)
@@ -106,18 +126,49 @@ class ModifierTab:
 
 
     def load_and_display_preview(self, image_path):
-        """Loads an image, resizes it for preview, and displays it."""
+        """Loads an image, resizes it for preview, displays it on the canvas, and stores scaling info."""
         try:
-            max_width = self._preview_max_width
-            max_height = self._preview_max_height
+            # Clear previous state
+            self.clear_preview()
+            self.preview_canvas.delete(self._placeholder_text_id) # Remove placeholder text
 
             img = Image.open(image_path)
-            img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+            self.original_image_size = img.size
+            original_width, original_height = self.original_image_size
 
-            self.preview_image_tk = ImageTk.PhotoImage(img) # Keep reference
+            # Calculate scaling to fit canvas while maintaining aspect ratio
+            canvas_width = self._preview_max_width
+            canvas_height = self._preview_max_height
+            scale_w = canvas_width / original_width
+            scale_h = canvas_height / original_height
+            self.preview_scale_factor = min(scale_w, scale_h)
 
-            self.preview_label.config(image=self.preview_image_tk, text="") # Display image, clear text
-            self.preview_label.image = self.preview_image_tk # Keep reference for label too
+            # Calculate preview dimensions and resize
+            preview_width = int(original_width * self.preview_scale_factor)
+            preview_height = int(original_height * self.preview_scale_factor)
+            # Ensure dimensions are at least 1 pixel
+            preview_width = max(1, preview_width)
+            preview_height = max(1, preview_height)
+
+            resized_img = img.resize((preview_width, preview_height), Image.Resampling.LANCZOS)
+            self.preview_image_tk = ImageTk.PhotoImage(resized_img) # Keep reference
+
+            # Calculate offset to center the image on the canvas
+            self.preview_offset_x = (canvas_width - preview_width) // 2
+            self.preview_offset_y = (canvas_height - preview_height) // 2
+
+            # Draw image on canvas
+            self.image_on_canvas_id = self.preview_canvas.create_image(
+                self.preview_offset_x, self.preview_offset_y,
+                anchor=tk.NW, image=self.preview_image_tk
+            )
+
+            # Reset crop selection
+            self.crop_x.set("0")
+            self.crop_y.set("0")
+            self.crop_width.set(str(original_width))
+            self.crop_height.set(str(original_height))
+
 
         except FileNotFoundError:
             self.status_var.set("Error: Preview file not found.")
@@ -126,12 +177,110 @@ class ModifierTab:
             self.status_var.set(f"Error loading preview: {e}")
             logging.warning(f"Could not load preview for {image_path}: {e}", exc_info=True)
             self.clear_preview()
+            # Show error on canvas
+            self.preview_canvas.create_text(
+                 self._preview_max_width / 2, self._preview_max_height / 2,
+                 text=f"Error loading preview:\n{e}", fill="red", anchor=tk.CENTER
+            )
 
     def clear_preview(self):
-        """Clears the preview area."""
-        self.preview_label.config(image='', text="Select an image to preview")
-        self.preview_label.image = None
-        self.preview_image_tk = None
+        """Clears the preview canvas and resets related variables."""
+        if self.crop_rect_id:
+            self.preview_canvas.delete(self.crop_rect_id)
+            self.crop_rect_id = None
+        if self.image_on_canvas_id:
+             self.preview_canvas.delete(self.image_on_canvas_id)
+             self.image_on_canvas_id = None
+
+        self.preview_image_tk = None # Allow garbage collection
+        self.original_image_size = None
+        self.preview_scale_factor = 1.0
+        self.preview_offset_x = 0
+        self.preview_offset_y = 0
+        self.start_x = None
+        self.start_y = None
+        # Optionally redraw placeholder if needed, but load_and_display handles it
+
+
+    # --- Canvas Mouse Event Handlers for Cropping ---
+
+    def on_canvas_press(self, event):
+        """Handles mouse button press on the canvas."""
+        if not self.image_on_canvas_id: # Only allow if image is loaded
+            return
+
+        self.start_x = self.preview_canvas.canvasx(event.x)
+        self.start_y = self.preview_canvas.canvasy(event.y)
+
+        # Delete previous rectangle if it exists
+        if self.crop_rect_id:
+            self.preview_canvas.delete(self.crop_rect_id)
+
+        # Create a new rectangle (initially a point)
+        self.crop_rect_id = self.preview_canvas.create_rectangle(
+            self.start_x, self.start_y, self.start_x, self.start_y,
+            outline='red', dash=(4, 2) # Dashed red outline
+        )
+
+    def on_canvas_drag(self, event):
+        """Handles mouse drag on the canvas."""
+        if not self.crop_rect_id: # Only if selection started
+            return
+
+        current_x = self.preview_canvas.canvasx(event.x)
+        current_y = self.preview_canvas.canvasy(event.y)
+
+        # Update the rectangle coordinates
+        self.preview_canvas.coords(self.crop_rect_id, self.start_x, self.start_y, current_x, current_y)
+
+    def on_canvas_release(self, event):
+        """Handles mouse button release on the canvas."""
+        if not self.crop_rect_id or not self.original_image_size:
+            return
+
+        end_x = self.preview_canvas.canvasx(event.x)
+        end_y = self.preview_canvas.canvasy(event.y)
+
+        # Ensure start coordinates are top-left and end coordinates are bottom-right
+        canvas_x1 = min(self.start_x, end_x)
+        canvas_y1 = min(self.start_y, end_y)
+        canvas_x2 = max(self.start_x, end_x)
+        canvas_y2 = max(self.start_y, end_y)
+
+        # Convert canvas coordinates back to original image coordinates
+        orig_width, orig_height = self.original_image_size
+
+        # Adjust for canvas offset and scale
+        orig_x1 = (canvas_x1 - self.preview_offset_x) / self.preview_scale_factor
+        orig_y1 = (canvas_y1 - self.preview_offset_y) / self.preview_scale_factor
+        orig_x2 = (canvas_x2 - self.preview_offset_x) / self.preview_scale_factor
+        orig_y2 = (canvas_y2 - self.preview_offset_y) / self.preview_scale_factor
+
+        # Clamp coordinates to be within the original image bounds [0, max_dim]
+        orig_x1 = max(0, orig_x1)
+        orig_y1 = max(0, orig_y1)
+        orig_x2 = min(orig_width, orig_x2)
+        orig_y2 = min(orig_height, orig_y2)
+
+        # Calculate original crop width and height, ensuring minimum of 1
+        crop_w = max(1, int(orig_x2 - orig_x1))
+        crop_h = max(1, int(orig_y2 - orig_y1))
+        crop_x_final = int(orig_x1)
+        crop_y_final = int(orig_y1)
+
+        # Ensure calculated crop area doesn't exceed original bounds due to rounding
+        if crop_x_final + crop_w > orig_width:
+             crop_w = orig_width - crop_x_final
+        if crop_y_final + crop_h > orig_height:
+             crop_h = orig_height - crop_y_final
+
+        # Update the entry fields
+        self.crop_x.set(str(crop_x_final))
+        self.crop_y.set(str(crop_y_final))
+        self.crop_width.set(str(max(1, crop_w))) # Ensure width/height are at least 1
+        self.crop_height.set(str(max(1, crop_h)))
+
+        self.status_var.set(f"Crop area selected: X={crop_x_final}, Y={crop_y_final}, W={crop_w}, H={crop_h}")
 
     def _get_output_path(self, suffix):
         """Generates an output path based on input path and suffix."""

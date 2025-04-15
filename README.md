@@ -11,7 +11,7 @@ This repository provides a suite of useful applications integrated into a single
 **GUI Application Tools:**
 
 1.  **Image Format Converter:** Converts images between various formats (e.g., PNG, JPEG, WEBP) and allows optional resizing. Includes an image preview.
-2.  **Image Modifier:** Resizes or crops images with options to maintain aspect ratio. Includes an image preview.
+2.  **Image Modifier:** Resizes images with options to maintain aspect ratio. Crops images either by entering coordinates or **interactively selecting an area by dragging on the preview**. Includes an image preview.
 3.  **Folder Icon Setter:** Changes folder icons to custom icons on Windows (.ico) and macOS (.icns). Includes an icon preview. *Note: Requires appropriate icon format for the target OS and may need administrative privileges on Windows.*
 4.  **Image to SVG Converter:** Transforms raster images (like PNG, JPG) into vector SVG format using techniques like color quantization and contour tracing. Includes an image preview.
 
@@ -66,7 +66,7 @@ This repository provides a suite of useful applications integrated into a single
     ```
 4.  The application window will appear (styled using `ttkthemes`), featuring tabs for each tool:
     *   **Format Converter:** Select an input image (preview shown), choose the desired output format, specify resizing options (if any), and click "Convert Image".
-    *   **Image Modifier:** Select an input image (preview shown). Enter desired dimensions for resizing (with option to keep aspect ratio) or coordinates/dimensions for cropping. Click "Resize Image" or "Crop Image".
+    *   **Image Modifier:** Select an input image (preview shown). Enter desired dimensions for resizing (with option to keep aspect ratio) or **click and drag on the preview image to select a crop area** (coordinates will auto-populate). Click "Resize Image" or "Crop Image".
     *   **Folder Icon Setter:** Select an icon file (`.ico` for Windows, `.icns` for macOS) (preview shown) and the target folder. Click "Apply Icon to Folder". Remember OS-specific requirements and potential admin rights needed on Windows.
     *   **Image to SVG:** Choose an input image (preview shown). Adjust conversion parameters (number of colors, tolerance, opacity threshold, simplification factor) as needed for optimal results. Click "Convert to SVG".
 
