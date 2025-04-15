@@ -13,3 +13,10 @@ icon_convertido.ico
 icono_carpeta.log
 
 desktop.ini
+
+# Ignorar archivos de configuración de IDEs
+.idea
+*.sublime-project
+
+pycaches
+__pycache__
